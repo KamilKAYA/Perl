@@ -9,10 +9,10 @@ while($InputIsOkay==0){
 	print " Please enter command, item and bit length (Ex:bta 4 6) >>";
 	$comInput=<STDIN>;
 	chomp $comInput;
-	($command, $item, $bitSize)=split / +/, $comInput;
-	$FileName=$command."_".$item."_".$bitSize;
+	($command, $input, $bitSize)=split / +/, $comInput;
+	$FileName=$command."_".$input."_".$bitSize;
 	$export=$FileName.".v";
-	if(($command eq "bta") and $bitSize>0 and	$item>0){
+	if(($command eq "bta") and $bitSize>0 and	$input>0){
 		$InputIsOkay=1;
 		print " \n";
 	}else
@@ -26,8 +26,8 @@ my @adders;
 my $number=0;
 my $bit=1;
 my $carry=2;
-if($item>0){
-	$adders[0][$number]=$item;
+if($input>0){
+	$adders[0][$number]=$input;
 	$arrayCounter=0;
 	while($adders[$arrayCounter][$number]!=0){
 			$adders[$arrayCounter][$carry]=$adders[$arrayCounter][$number]%2;
@@ -62,10 +62,15 @@ print " adders \n";
 
 # File writing sub program begin.
 open(File, ">$export") or die " Could not open the file.";
-print File "module TopModule_".$FileName."(";
-print File "module TopModule_".$FileName."(";
-);
-endmodule";
+print File "module Top_".$FileName."(";
+for($i=0; $i<$input; $i++){
+	print File "input [".($bitSize-1).":0] in".$i;
+	print File ", ";
+}
+print File "output reg [".($adders[$arrayCounter-1][$bit]-1).":0] out, output reg carry);\n";
+
+
+print File "endmodule";
 
 
 for($i=0; $i<$arrayCounter-1; $i++){
