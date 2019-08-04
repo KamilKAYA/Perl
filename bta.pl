@@ -78,8 +78,8 @@ for($k=0; $k<$arrayCounter; $k++){
 }
 
 $FA=0;
-$redundancyBit;
-
+$lastInput=0;
+$lastAcc=0;
 for($k=0; $k<$arrayCounter; $k++){
 	
 	if($adders[$k][$carry]==1 and $carryFlag==0){
@@ -87,22 +87,29 @@ for($k=0; $k<$arrayCounter; $k++){
 		for($i=0; $i<$adders[$k][$number]; $i++){
 			if($k==0){$registerName="in";}
 			else {$registerName="acc";}
-			print File "FullAdder_".$adders[$k][$bit]."bit FA".$FA."(.in0(".$registerName.($i*2)."), .in1(".$registerName.($i*2+1)."), .carryIn(), .out(acc".($FA)."), .carryOut());\n";
+			print File "FullAdder_".$adders[$k][$bit]."bit FA".$FA."(.in0(".$registerName.($i*2)."), .in1(".$registerName.($i*2+1)."), .carryIn(b), .out(acc".($FA)."), .carryOut());\n";
 			$FA++;
 		}
-		
-		if($adders[$k][$carry]==1){$redundancyBit=$adders[$k][$number];}
+		$lastInput=($i+1)*2;
 		$carryFlag=1;
 		
 	}elsif($adders[$k][$carry]==1 and $adders[$k-1][$carry]==1 and $carryFlag==1){
 		
-		for($i=0; $i<$adders[$k][$number]-1; $i++){
-			if(($k-1)==0){$registerName="in".$redundancyBit;}
-			else {$registerName="acc";}
-			print File "FullAdder_".$adders[$k][$bit]."bit FA".$FA."(.in0(".$registerName.($i*2)."), .in1(".$registerName.($i*2+1)."), .carryIn(), .out(acc".($FA)."), .carryOut());\n";
+		for($i=0; $i<$adders[$k][$number]; $i++){
+			if(($adders[$k][$number]-1)==$i){
+				$registerName1="acc";
+				$registerName2="in";
+				$value1=$i*2;
+				$value2=$lastInput;
+			}elsif($i<($adders[$k][$number]-1)){
+				$registerName1="acc";
+				$registerName2="acc";
+				$value1=$i*2;
+				$value2=$i*2+1;
+			}
+			print File "FullAdder_".$adders[$k][$bit]."bit FA".$FA."(.in0(".$registerName1.$value1."), .in1(".$registerName2.$value2."), .carryIn(c), .out(acc".($FA)."), .carryOut());\n";
 			$FA++;
 		}
-		print File "FullAdder_".$adders[$k][$bit]."bit FA".$FA."(.in0(".$registerName.($i*2)."), .in1(".$registerName.($i*2+1)."), .carryIn(x), .out(acc".($FA)."), .carryOut());\n";
 		$FA++;
 		
 		$carryFlag=0;
@@ -113,7 +120,7 @@ for($k=0; $k<$arrayCounter; $k++){
 		for($i=0; $i<$adders[$k][$number]; $i++){
 		if($k==0){$registerName="in";}
 		else {$registerName="acc";}
-		print File "FullAdder_".$adders[$k][$bit]."bit FA".$FA."(.in0(".$registerName.($i*2)."), .in1(".$registerName.($i*2+1)."), .carryIn(), .out(acc".($FA)."), .carryOut());\n";
+		print File "FullAdder_".$adders[$k][$bit]."bit FA".$FA."(.in0(".$registerName.($i*2)."), .in1(".$registerName.($i*2+1)."), .carryIn(ebta 11 ), .out(acc".($FA)."), .carryOut());\n";
 		$FA++;
 		}
 	}
