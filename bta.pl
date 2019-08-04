@@ -23,6 +23,7 @@ while($InputIsOkay==0){
 
 # Program adder item calculation start.
 my @adders;
+my @wires;
 my $number=0;
 my $bit=1;
 my $carry=2;
@@ -54,7 +55,7 @@ if($input>0){
 $carryFlag=0;
 print " For this design you need: \n";
 for($i=0; $i<$arrayCounter-1; $i++){
-	print "\t".$adders[$i][0]."x".$adders[$i][1]." bit FA \n";
+	print "\t".$adders[$i][$number]."x".$adders[$i][$bit]." bit FA ".$adders[$i][$carry=2]." \n";
 }
 print " adders \n";
 # Program adder item calculation end.
@@ -88,9 +89,11 @@ for($k=0; $k<$arrayCounter; $k++){
 			if($k==0){$registerName="in";}
 			else {$registerName="acc";}
 			print File "FullAdder_".$adders[$k][$bit]."bit FA".$FA."(.in0(".$registerName.($i*2)."), .in1(".$registerName.($i*2+1)."), .carryIn(b), .out(acc".($FA)."), .carryOut());\n";
+			$wires[$k][$i]="acc".($FA);
 			$FA++;
 		}
-		$lastInput=($i+1)*2;
+		$lastAcc=$FA;
+		$lastInput=$i*2;
 		$carryFlag=1;
 		
 	}elsif($adders[$k][$carry]==1 and $adders[$k-1][$carry]==1 and $carryFlag==1){
@@ -108,21 +111,39 @@ for($k=0; $k<$arrayCounter; $k++){
 				$value2=$i*2+1;
 			}
 			print File "FullAdder_".$adders[$k][$bit]."bit FA".$FA."(.in0(".$registerName1.$value1."), .in1(".$registerName2.$value2."), .carryIn(c), .out(acc".($FA)."), .carryOut());\n";
+			$wires[$k][$i]="acc".($FA);
 			$FA++;
 		}
-		$FA++;
-		
+		$FA++;		
 		$carryFlag=0;
-	}elsif($adders[$arrayCounter][$carry]==1 and $adders[$arrayCounter-1][$carry]==0 and $carryFlag==1){
-
+	}elsif($adders[$k][$carry]==1 and $adders[$k-1][$carry]==0 and $carryFlag==1){
+		for($i=0; $i<$adders[$k][$number]; $i++){
+			if(($adders[$k][$number]-1)==$i){
+				$registerName1="acc";
+				$registerName2="in";
+				$value1=$i*2;
+				$value2=$FA;
+			}elsif($i<($adders[$k][$number]-1)){
+				$registerName1="acc";
+				$registerName2="acc";
+				$value1=$i*2;
+				$value2=$i*2+1;
+			}
+			print File "FullAdder_".$adders[$k][$bit]."bit FA".$FA."(.in0(".$registerName1.$value1."), .in1(".$registerName2.$value2."), .carryIn(c), .out(acc".($FA)."), .carryOut());\n";
+			$wires[$k][$i]="acc".($FA);
+			$FA++;
+		}
+		$FA++;		
 		$carryFlag=0;
 	}else{
 		for($i=0; $i<$adders[$k][$number]; $i++){
 		if($k==0){$registerName="in";}
 		else {$registerName="acc";}
-		print File "FullAdder_".$adders[$k][$bit]."bit FA".$FA."(.in0(".$registerName.($i*2)."), .in1(".$registerName.($i*2+1)."), .carryIn(ebta 11 ), .out(acc".($FA)."), .carryOut());\n";
+		print File "FullAdder_".$adders[$k][$bit]."bit FA".$FA."(.in0(".$registerName.($i*2)."), .in1(".$registerName.($i*2+1)."), .carryIn(d), .out(acc".($FA)."), .carryOut());\n";
+		$wires[$k][$i]="acc".($FA);
 		$FA++;
 		}
+		
 	}
 	
 }
