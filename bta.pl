@@ -159,7 +159,7 @@ for($k=0; $k<$arrayCounter; $k++){
 	}
 	
 }
-print File "assign out=acc".$FA."\n\n";
+print File "assign out=acc".($FA-1).";\n\n";
 print File "endmodule";
 
 
